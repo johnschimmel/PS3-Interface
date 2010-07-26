@@ -1,0 +1,9 @@
+This application is part of a joint effort between Tymm Twillman, Steven Swarztrauber and John Schimmel.
+
+Processing PS3 Interface is the software side of a single switch accessible PS3 controller. If a person can control their computer mouse, via a regular mouse, trackball or head mouse they can have the option to play a PS3. Using an PIC Bitwhacker as the PS3 Controller interface it connects to an Arduino that relays the message back to Processing.
+
+This Processing app requires you to install the ProXML library from http://creativecomputing.cc/p5libs/proxml/ .
+
+
+
+I will update this README with more information soon
