@@ -9,8 +9,7 @@ class Layout {
   ArrayList theSets;
   boolean initialSets = false;
 
-  //screen joystick
- // ScreenJoystick screenJoy;
+
   
   int theJoySize = 450;
   ActiveJoystick activeJoy;
@@ -19,7 +18,7 @@ class Layout {
     boundary = new Rectangle(0,0, width, height-30);
 
     this.buttons = new ArrayList();
-   // screenJoy = new ScreenJoystick();
+    
     activeJoy  = new ActiveJoystick(width/2-(this.theJoySize/2), height/3-(this.theJoySize/2),this.theJoySize, this.theJoySize);
   }
 

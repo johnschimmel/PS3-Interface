@@ -14,9 +14,9 @@
     <button xpos="370" name="L3" ypos="187"/>
     <button xpos="741" name="R2 Trigger" ypos="142"/>
     <button xpos="869" name="R2 Trigger" ypos="290"/>
-    <button xpos="283" name="R2 Trigger" ypos="337"/>
+    <button xpos="247" name="R2 Trigger" ypos="353"/>
     <button xpos="485" name="R2 Trigger" ypos="267"/>
-    <button xpos="356" name="Square" ypos="274"/>
+    <button xpos="315" name="Square" ypos="298"/>
     <button xpos="820" name="Circle" ypos="277"/>
     <button xpos="693" name="Triangle" ypos="146"/>
     <button xpos="867" name="R1 Trigger" ypos="15"/>

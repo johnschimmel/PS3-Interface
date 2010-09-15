@@ -16,7 +16,7 @@ class ActiveJoystick {
   boolean active = false;
 
   //button container
-  Rectangle labelContainer, modeToggleBtn, switchButtonLabel;
+  Rectangle labelContainer, modeToggleBtn, switchButtonLabel,clickConfigBtn;
 
   Button switchButtonL,switchButtonR; //button that is pressed when ActiveJoystick is used and mouse clicked.
   Boolean switchPressed;
@@ -93,6 +93,7 @@ class ActiveJoystick {
     this.labelContainer.setLocation(10, height-70);
 
     this.modeToggleBtn = new Rectangle();
+    this.clickConfigBtn = new Rectangle();
     this.switchButtonLabel = new Rectangle(); //display the current switchButton namej
   }
 
@@ -138,7 +139,7 @@ class ActiveJoystick {
       }
       
       this.displayMouseDot();
-      //this.displayButtons();
+      this.displayButtons();
     }
     
     //display the lower left label
@@ -302,6 +303,17 @@ class ActiveJoystick {
   }
 
   void displayButtons() {
+    Button firstButton = (Button) this.joystickButtons.get(0);
+    
+    Button lastButton = (Button) this.joystickButtons.get(this.joystickButtons.size()-1);
+    
+    fill(255);
+    stroke(100);
+    rect(firstButton.theRect.x-10, firstButton.theRect.y-5, 340, 150);
+    noStroke();
+    noFill();
+    
+    println("first button x = " + firstButton.theRect.x);
     for(int i=0; i<this.joystickButtons.size(); i++) {
       Button tButton = (Button) this.joystickButtons.get(i);
       tButton.display();
@@ -328,11 +340,12 @@ class ActiveJoystick {
     int tmpX = (int)this.labelContainer.getWidth() + 15;
     int tmpY = (int)this.labelContainer.getY() ;
    this.modeToggleBtn.setLocation(tmpX, tmpY);
-    this.modeToggleBtn.setSize(160,20);
+    this.modeToggleBtn.setSize(110,20);
    
    fill(120);
-   String leftStr = "LEFTJOY";
-   String rightStr = "RIGHTJOY";
+   String leftStr = "L-JOY";
+   String rightStr = "R-JOY";
+   String clickConfStr = "Click Config.";
    
    //rect((int)this.modeToggleBtn.getX(),(int)this.modeToggleBtn.getY()-5, (int)this.modeToggleBtn.getWidth(), (int)this.modeToggleBtn.getHeight()+20);
    int leftFill,rightFill = 0;
@@ -352,7 +365,11 @@ class ActiveJoystick {
    fill(rightFill);
    text(rightStr, (int)this.modeToggleBtn.getX()+(int)textWidth(leftStr)+15,(int)this.modeToggleBtn.getY()+20);
    
+   //display click config label
+   fill(120);
+   text(clickConfStr, (int)this.modeToggleBtn.getX()+(int)textWidth(leftStr)+(int)textWidth(rightStr)+25,(int)this.modeToggleBtn.getY()+20);
   }
+  
   
   boolean leftRightClicked() {
     if (this.modeToggleBtn.contains(mouseX, mouseY)) {
