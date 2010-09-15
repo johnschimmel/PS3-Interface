@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<layouts>
+  <layout>
+    <button xpos="336" name="PS" ypos="4"/>
+    <button xpos="34" name="Start" ypos="1"/>
+    <button xpos="201" name="Select" ypos="143"/>
+    <button xpos="577" name="DPad Up" ypos="1"/>
+    <button xpos="470" name="DPad Left" ypos="42"/>
+    <button xpos="61" name="L2 Trigger" ypos="187"/>
+    <button xpos="1053" name="R2 Trigger" ypos="197"/>
+    <button xpos="231" name="R3" ypos="39"/>
+    <button xpos="59" name="L1 Trigger" ypos="97"/>
+    <button xpos="1065" name="R1 Trigger" ypos="90"/>
+    <button xpos="370" name="L3" ypos="187"/>
+    <button xpos="741" name="R2 Trigger" ypos="142"/>
+    <button xpos="869" name="R2 Trigger" ypos="290"/>
+    <button xpos="283" name="R2 Trigger" ypos="337"/>
+    <button xpos="485" name="R2 Trigger" ypos="267"/>
+    <button xpos="356" name="Square" ypos="274"/>
+    <button xpos="820" name="Circle" ypos="277"/>
+    <button xpos="693" name="Triangle" ypos="146"/>
+    <button xpos="867" name="R1 Trigger" ypos="15"/>
+    <button xpos="922" name="R2 Trigger" ypos="49"/>
+    <button xpos="655" name="DPad Right" ypos="49"/>
+    <button xpos="577" name="DPad Down" ypos="126"/>
+    <button xpos="633" name="Cross" ypos="515"/>
+    <button xpos="638" name="Triangle" ypos="364"/>
+    <button xpos="750" name="Circle" ypos="497"/>
+    <button xpos="477" name="Square" ypos="505"/>
+    <button xpos="554" name="Cross" ypos="254"/>
+    <button xpos="889" name="L Joy" ypos="472"/>
+    <button xpos="1125" name="R Joy" ypos="451"/>
+  </layout>
+  <layout>
+    <button xpos="923" name="Square" ypos="436"/>
+    <button xpos="3" name="PS" ypos="90"/>
+    <button xpos="74" name="Select" ypos="82"/>
+    <button xpos="718" name="Circle" ypos="462"/>
+    <button xpos="586" name="Triangle" ypos="384"/>
+    <button xpos="255" name="Start" ypos="84"/>
+    <button xpos="654" name="DPad Down" ypos="200"/>
+    <button xpos="607" name="Cross" ypos="533"/>
+    <button xpos="453" name="Square" ypos="476"/>
+    <button xpos="370" name="L1 Trigger" ypos="208"/>
+    <button xpos="653" name="DPad Up" ypos="34"/>
+    <button xpos="558" name="DPad Left" ypos="139"/>
+    <button xpos="741" name="DPad Right" ypos="133"/>
+    <button xpos="369" name="L2 Trigger" ypos="315"/>
+    <button xpos="944" name="R1 Trigger" ypos="177"/>
+    <button xpos="947" name="R2 Trigger" ypos="289"/>
+  </layout>
+  <layout>
+    <button xpos="25" name="PS" ypos="109"/>
+    <button xpos="119" name="Start" ypos="105"/>
+    <button xpos="241" name="Select" ypos="118"/>
+    <button xpos="494" name="Triangle" ypos="347"/>
+    <button xpos="622" name="Circle" ypos="411"/>
+    <button xpos="519" name="Cross" ypos="524"/>
+    <button xpos="356" name="Square" ypos="391"/>
+    <button xpos="273" name="Square" ypos="534"/>
+    <button xpos="341" name="R2 Trigger" ypos="552"/>
+    <button xpos="614" name="L Joy" ypos="126"/>
+    <button xpos="803" name="R Joy" ypos="335"/>
+    <button xpos="135" name="DPad Up" ypos="269"/>
+    <button xpos="145" name="DPad Down" ypos="381"/>
+    <button xpos="35" name="DPad Left" ypos="336"/>
+    <button xpos="217" name="DPad Right" ypos="324"/>
+    <button xpos="469" name="L1 Trigger" ypos="140"/>
+    <button xpos="470" name="L2 Trigger" ypos="232"/>
+    <button xpos="1017" name="R1 Trigger" ypos="287"/>
+    <button xpos="1038" name="R2 Trigger" ypos="391"/>
+    <button xpos="803" name="L3" ypos="22"/>
+    <button xpos="926" name="R3" ypos="31"/>
+  </layout>
+  <layout>
+    <button xpos="590" name="R2 Trigger" ypos="117"/>
+    <button xpos="104" name="Start" ypos="401"/>
+    <button xpos="1084" name="R Joy" ypos="439"/>
+  </layout>
+  <layout>
+    <button xpos="604" name="Cross" ypos="472"/>
+    <button xpos="408" name="Square" ypos="288"/>
+    <button xpos="780" name="Circle" ypos="319"/>
+    <button xpos="589" name="Triangle" ypos="129"/>
+    <button xpos="829" name="R Joy" ypos="426"/>
+    <button xpos="123" name="DPad Up" ypos="214"/>
+    <button xpos="120" name="DPad Down" ypos="361"/>
+    <button xpos="11" name="DPad Left" ypos="309"/>
+    <button xpos="205" name="DPad Right" ypos="302"/>
+    <button xpos="551" name="L Joy" ypos="265"/>
+    <button xpos="48" name="Start" ypos="527"/>
+    <button xpos="772" name="Triangle" ypos="121"/>
+    <button xpos="853" name="Circle" ypos="154"/>
+    <button xpos="338" name="Cross" ypos="131"/>
+    <button xpos="403" name="Square" ypos="147"/>
+    <button xpos="1038" name="R1 Trigger" ypos="169"/>
+    <button xpos="1041" name="R2 Trigger" ypos="263"/>
+    <button xpos="290" name="L1 Trigger" ypos="468"/>
+    <button xpos="270" name="L2 Trigger" ypos="596"/>
+  </layout>
+</layouts>
