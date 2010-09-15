@@ -1,0 +1,3 @@
+
+ps3Interface
+ps3Interface.jar,core.jar,serial.jar,RXTXcomm.jar,proxml.jar
