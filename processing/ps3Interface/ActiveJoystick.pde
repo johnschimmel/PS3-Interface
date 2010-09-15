@@ -325,7 +325,12 @@ class ActiveJoystick {
       if (tButton.theRect.contains(mouseX, mouseY)) {
         tButton.highlight(true); 
         if (mousePressed) {
-          this.switchButtonL =new Button(tButton);
+           if (mouseButton == LEFT) {
+              this.switchButtonL =new Button(tButton);
+           } else {
+              this.switchButtonR =new Button(tButton);
+             
+           }
         }
       } 
       else {
@@ -333,7 +338,7 @@ class ActiveJoystick {
       }
 
       //button group highlighted
-      if (tButton.name == this.switchButtonL.name) {
+      if (tButton.name == this.switchButtonL.name || tButton.name == this.switchButtonR.name) {
         tButton.highlight(true); 
       }
     } 
