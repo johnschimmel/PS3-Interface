@@ -21,6 +21,7 @@ class ActiveJoystick {
   Button switchButtonL,switchButtonR; //button that is pressed when ActiveJoystick is used and mouse clicked.
   Boolean switchPressed;
   ArrayList selectedButtons, joystickButtons;
+  boolean displayClickConfigButtons = false;
 
   //colors
   color leftFill = color(20,255,50); //green ;
@@ -139,10 +140,14 @@ class ActiveJoystick {
       }
       
       this.displayMouseDot();
-      this.displayButtons();
+      //display the click config button area 
+      if (displayClickConfigButtons) {
+        this.displayButtons();
+      }
     }
     
     //display the lower left label
+
     this.displayScreenJoyLabel();
   }
 
@@ -309,11 +314,10 @@ class ActiveJoystick {
     
     fill(255);
     stroke(100);
-    rect(firstButton.theRect.x-10, firstButton.theRect.y-5, 340, 150);
+    rect(firstButton.theRect.x-10, firstButton.theRect.y-5, 340, 90);
     noStroke();
     noFill();
     
-    println("first button x = " + firstButton.theRect.x);
     for(int i=0; i<this.joystickButtons.size(); i++) {
       Button tButton = (Button) this.joystickButtons.get(i);
       tButton.display();
@@ -337,15 +341,19 @@ class ActiveJoystick {
   }
 
   void displayLeftRightToggle() {
-    int tmpX = (int)this.labelContainer.getWidth() + 15;
-    int tmpY = (int)this.labelContainer.getY() ;
-   this.modeToggleBtn.setLocation(tmpX, tmpY);
-    this.modeToggleBtn.setSize(110,20);
    
    fill(120);
    String leftStr = "L-JOY";
    String rightStr = "R-JOY";
-   String clickConfStr = "Click Config.";
+   String clickConfStr = "CLICK CONFIG";
+
+    int tmpX = (int)this.labelContainer.getWidth() + 15;
+    int tmpY = (int)this.labelContainer.getY() ;   
+    this.modeToggleBtn.setLocation(tmpX, tmpY);
+    this.modeToggleBtn.setSize((int)textWidth(leftStr)+(int)textWidth(rightStr),20); //110 shouldn't be hardcoded, should be 
+   
+   this.clickConfigBtn.setLocation( (int)this.modeToggleBtn.getX()+ (int)this.modeToggleBtn.getWidth()+50, tmpY);
+    this.clickConfigBtn.setSize((int)textWidth(clickConfStr), 20);
    
    //rect((int)this.modeToggleBtn.getX(),(int)this.modeToggleBtn.getY()-5, (int)this.modeToggleBtn.getWidth(), (int)this.modeToggleBtn.getHeight()+20);
    int leftFill,rightFill = 0;
@@ -367,7 +375,7 @@ class ActiveJoystick {
    
    //display click config label
    fill(120);
-   text(clickConfStr, (int)this.modeToggleBtn.getX()+(int)textWidth(leftStr)+(int)textWidth(rightStr)+25,(int)this.modeToggleBtn.getY()+20);
+   text(clickConfStr, (int)this.clickConfigBtn.getX(),(int)this.clickConfigBtn.getY()+20);
   }
   
   
@@ -389,6 +397,18 @@ class ActiveJoystick {
    }
   }
 
+
+  boolean clickConfigClicked() {
+    if (this.clickConfigBtn.contains(mouseX, mouseY)) {
+     this.displayClickConfigButtons = !this.displayClickConfigButtons;
+     return true;
+    } else {
+     return false; 
+    }
+      
+    
+  }
+  
 
   
   void reset() {

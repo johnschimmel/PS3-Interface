@@ -91,7 +91,7 @@ class Button {
       textFont(font);
 
       if ( this.digitalMode == 1) {
-        //turn button label red on click, otherwise black
+        //turn button label red on click, otherwise 
         color tmpTextColor = (this.active) ? color(255,0,0) : color(0,0,0);
         fill(tmpTextColor);
         text(this.name, this.theRect.x, (this.theRect.y + (float)this.theRect.getHeight()) );

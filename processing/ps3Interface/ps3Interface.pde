@@ -316,6 +316,8 @@ void mouseReleased(){
   } 
   else if ( currentLayout.activeJoy.leftRightClicked() ) {
     currentLayout.activeJoy.toggleLeftRight();
+  } else if ( currentLayout.activeJoy.clickConfigClicked() ) {
+    //method takes care of itself 
   }
   
 
