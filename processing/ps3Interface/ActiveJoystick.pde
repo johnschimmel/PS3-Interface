@@ -18,8 +18,8 @@ class ActiveJoystick {
   //button container
   Rectangle labelContainer, modeToggleBtn, switchButtonLabel,clickConfigBtn;
 
-  Button switchButtonL,switchButtonR, keyButton1; //button that is pressed when ActiveJoystick is used and mouse clicked.
-  Boolean switchPressed;
+  Button switchButtonL,switchButtonR, keyButton1, keyButton2; //button that is pressed when ActiveJoystick is used and mouse clicked.
+  Boolean switchPressed,keyButton1Pressed, keyButton2Pressed = false;
   ArrayList selectedButtons, joystickButtons;
   boolean displayClickConfigButtons = false;
 
@@ -29,6 +29,9 @@ class ActiveJoystick {
   
   //boolean
   boolean locked = false;
+  
+  float keyButtonDelay = 2000;
+  float keyButton1Time;
   
   ActiveJoystick(int x, int y, int w, int h) {
     this.container = new Ellipse2D.Double(x,y,w+(this.dotWidth/2),h+(this.dotWidth/2));
@@ -92,6 +95,11 @@ class ActiveJoystick {
 
     Button tButton3 = (Button)joystickButtons.get(2);
     this.keyButton1 = new Button(tButton3); 
+    this.keyButton1Pressed = false;
+    
+    Button tButton4 = (Button)joystickButtons.get(3);
+    this.keyButton2 = new Button(tButton4); 
+    this.keyButton2Pressed = false;
 
 
     this.labelContainer = new Rectangle();
@@ -220,7 +228,9 @@ class ActiveJoystick {
         this.switchButtonL.sendCommand(); 
         this.switchButtonL.highlight(true);
         this.switchPressed = true;
-      } else if (mouseButton == RIGHT) {
+      } 
+      
+      if (mouseButton == RIGHT) {
         this.switchButtonR.setX(mouseX-(int)this.switchButtonR.getWidth()/2);
         this.switchButtonR.setY(mouseY-(int)this.switchButtonR.getHeight()-this.dotWidth);
         this.switchButtonR.display();
@@ -239,23 +249,33 @@ class ActiveJoystick {
 
     }
     
-    if (keyPressed && this.container.contains(mouseX,mouseY)) {
+    if (keyPressed && this.container.contains(mouseX,mouseY) ) {
+        if (key == 'a' || key == 'A') {
+            this.keyButton1.setX(mouseX-(int)this.keyButton1.getWidth()/2);
+            this.keyButton1.setY(mouseY-(int)this.keyButton1.getHeight()-this.dotWidth);
+            this.keyButton1.display();
+            this.keyButton1.sendCommand(); 
+            this.keyButton1.highlight(true);
+            this.keyButton1Pressed = true;
+        }
         
-        this.keyButton1.setX(mouseX-(int)this.keyButton1.getWidth()/2);
-        this.keyButton1.setY(mouseY-(int)this.keyButton1.getHeight()-this.dotWidth);
-        this.keyButton1.display();
-        this.keyButton1.sendCommand(); 
-        this.keyButton1.highlight(true);
-        this.switchPressed = true;
+        if (key == 'c' || key == 'C') {
+            this.keyButton2.setX(mouseX-(int)this.keyButton2.getWidth()/2);
+            this.keyButton2.setY(mouseY-(int)this.keyButton2.getHeight()-this.dotWidth);
+            this.keyButton2.display();
+            this.keyButton2.sendCommand(); 
+            this.keyButton2.highlight(true);
+            this.keyButton2Pressed = true;
+            
+        }
 
 
-    } else if (!mousePressed && this.switchPressed) {
-
+    } else if (!keyPressed && this.container.contains(mouseX,mouseY) && this.keyButton1Pressed) {
           this.keyButton1.forceReset();
-          this.keyButton1.forceReset();
-
-          this.switchPressed = false;
-
+          this.keyButton1Pressed = false;
+    } else if (!keyPressed && this.container.contains(mouseX,mouseY) && this.keyButton2Pressed) {
+            this.keyButton2.forceReset();
+            this.keyButton2Pressed = false;
     }
 
   }
@@ -361,7 +381,10 @@ class ActiveJoystick {
         if(keyPressed) {
            if (key == 'a' || key == 'A') {
              this.keyButton1 =new Button(tButton);
+           } else if (key == 'c' || key == 'C') {
+             this.keyButton2 =new Button(tButton);
            }
+           
          }
       } 
       else {
@@ -369,7 +392,7 @@ class ActiveJoystick {
       }
 
       //button group highlighted
-      if (tButton.name == this.switchButtonL.name || tButton.name == this.switchButtonR.name || tButton.name ==this.keyButton1.name) {
+      if (tButton.name == this.switchButtonL.name || tButton.name == this.switchButtonR.name || tButton.name ==this.keyButton1.name || tButton.name ==this.keyButton2.name) {
         tButton.highlight(true); 
       }
     } 
@@ -452,6 +475,7 @@ class ActiveJoystick {
     this.switchButtonL.forceReset();
     this.switchButtonR.forceReset();
     this.keyButton1.forceReset();
+    this.keyButton2.forceReset();
     
     String commandString = "";
     if (this.mode == 'L') {
@@ -483,15 +507,4 @@ class ActiveJoystick {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
