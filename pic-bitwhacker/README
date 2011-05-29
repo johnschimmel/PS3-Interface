@@ -2,7 +2,7 @@ The actual interface to the PS3 is through a USB Pic Bitwhacker, an amazing devi
 
 We use the arduino to communicate from the PC to the Pic bitwhcker. The bitwhacker sends the appropriate ps3 commands to the game console.
 
-The Bitwhacker site on an Arduino shield and the connections are as followed...
+The Bitwhacker sits on an Arduino shield and the connections are as followed...
 
 Arduino pin     Pic bitwhacker pin
 10  -------->   2
