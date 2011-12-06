@@ -12,8 +12,13 @@ ArrayList layoutMenu_buttons;
 
 PFont font;
 Serial myPort; //serial port
+Serial switchPort;
 String[] availablePorts; //used to keep track of available ports
 int currentPortNumber = 0; // element number from availablePorts
+int[] dataIn = new int[2];         // a list to hold data from the serial ports
+
+byte[][] incomingData = { {65,66,67}, {97,98,99} }; //imcomingData[0] = 'A','B','C' [1] = 'a','b','c'
+boolean[] accessorySwitch = new boolean[3];
 
 proxml.XMLElement controller, buttons, joysticks, layouts;
 XMLInOut xmlButtons, xmlLayouts;
@@ -38,6 +43,8 @@ ButtonLibrary library;
 
 ActiveJoystick activejoy;
 
+boolean accessorySwitch1, accessorySwitch2 = false;
+
 void setup() {
   size(1366,700);
 
@@ -45,8 +52,13 @@ void setup() {
   availablePorts = Serial.list();
   println("There are " + availablePorts.length + " serial ports");
   println("----------------------------------------");
-  myPort = new Serial(this, Serial.list()[currentPortNumber], 19200);
+//  myPort = new Serial(this, Serial.list()[currentPortNumber], 19200);
+  //define 2nd serial port for swi
+//  switchPort = new Serial(this, "COM8", 9600);
 
+myPort = new Serial(this, Serial.list()[2], 19200);
+switchPort = new Serial(this, Serial.list()[0], 9600);
+  
 
   theButtons = new ArrayList();
   theButtonLibrary = new ArrayList();
@@ -96,7 +108,10 @@ void setup() {
   layoutMenu_buttons.add(layout5);
 
   library = new ButtonLibrary();
-
+  
+  for(int i=0; i<accessorySwitch.length; i++) {
+    accessorySwitch[i] = false; 
+  }
 }
 
 
@@ -106,11 +121,10 @@ void draw() {
   if (currentLayout != null) {
     renderSets();
     currentLayout.display(); 
-    
+
     if (library.isActive) {
       library.display();
     }
-
   }
 
   //display status bar on bottom of the window.
@@ -126,7 +140,7 @@ void draw() {
     Menu_button tempmb = (Menu_button)menu_buttons.get(mb);
     tempmb.display();
   }
-  
+
   //testJoy.display();
 }
 
@@ -138,11 +152,10 @@ void loadControllerInfo() {
 
   //load ellipses from file if it exists
   xmlButtons = new XMLInOut(this);
-  try{
+  try {
     xmlButtons.loadElement("xml/buttons.xml");
-
   }
-  catch(Exception e){
+  catch(Exception e) {
     println("file not found");
   }
 }
@@ -151,17 +164,15 @@ void loadLayouts() {
 
   //load layouts
   xmlLayouts = new XMLInOut(this);
-  try{
-    xmlLayouts.loadElement("xml/layouts.xml"); 
+  try {
+    xmlLayouts.loadElement("xml/layouts.xml");
   }
-  catch(Exception e){
+  catch(Exception e) {
     println("file not found");
   }
-
-
 }
 
-void xmlEvent(proxml.XMLElement element){
+void xmlEvent(proxml.XMLElement element) {
   String currentElement = element.getName();
   println("--------------------------------------");
   println("Loading XML <" + currentElement + ">");
@@ -195,24 +206,19 @@ void xmlEvent(proxml.XMLElement element){
 
         else if (tempElement.getElement().equals("command")) {
           buttonCommand = tempElement.getAttribute("string");
-
         } 
         else if (tempElement.getElement().equals("analog")) {
-          isAnalog = tempElement.getAttribute("value"); 
+          isAnalog = tempElement.getAttribute("value");
         }
-
       } //end of for loop for button elements
 
       Button tb = new Button(buttonName, buttonImage,buttonCommand, buttonXPos, buttonYPos,isAnalog);
       theButtonLibrary.add(tb);
-
     } //end of for loop for buttons   
     xmlLayouts = new XMLInOut(this);
 
     library = new ButtonLibrary();
     loadLayouts();
-
-
   } 
   else if (currentElement.equals("layouts") && element.hasChildren() ) {
     layouts = element;
@@ -251,12 +257,7 @@ void xmlEvent(proxml.XMLElement element){
     currentLayout = (Layout)theLayouts.get(currentLayoutNumber); //get current layout
     menu_button_command("layout_1");
     resetSets();
-
   }
-
-
-
-
 }
 
 Button getButtonByName(String name) {
@@ -264,21 +265,40 @@ Button getButtonByName(String name) {
 
   for(int i=0; i<theButtonLibrary.size(); i++) {
     Button tButton = (Button) theButtonLibrary.get(i);
-    if (tButton.name.equals(name)){
-      foundButton = tButton; 
-    } 
+    if (tButton.name.equals(name)) {
+      foundButton = tButton;
+    }
   } 
 
   return foundButton;
 }
 
 void serialEvent(Serial p) { 
-  String inString = (myPort.readString()); 
-  println("received " + inString);
+  int inByte = (switchPort.read());
+  for(int i=0; i<3; i++) {
+    if (inByte == incomingData[0][i]) {
+      accessorySwitch[i] = true;
+    }
+    
+    if (inByte == incomingData[1][i]) {
+      accessorySwitch[i] = false; 
+    }
+  }
+  
+  /*
+  if (inByte == 49) {
+    //incoming 1
+    accessorySwitch1 = true;
+  } 
+  else if (inByte == 48) {
+    //incoming 0
+    accessorySwitch1 = false;
+  }
+  */
 }
 
 
-void mouseReleased(){
+void mouseReleased() {
   if (!buttonsLocked || library.isDisplayed() ) {
 
     proxml.XMLElement layoutsXML = new proxml.XMLElement("layouts");
@@ -296,7 +316,6 @@ void mouseReleased(){
       }
 
       layoutsXML.addChild(layout);
-
     }
 
 
@@ -309,18 +328,17 @@ void mouseReleased(){
   library.mousePressing = false;
 
   //screenJoy was it pressed?
-  
+
   currentLayout = (Layout)theLayouts.get(currentLayoutNumber); //get current layout
   if (currentLayout.activeJoy.clicked()) {
-    currentLayout.activeJoy.toggleActivity(); 
+    currentLayout.activeJoy.toggleActivity();
   } 
   else if ( currentLayout.activeJoy.leftRightClicked() ) {
     currentLayout.activeJoy.toggleLeftRight();
-  } else if ( currentLayout.activeJoy.clickConfigClicked() ) {
-    //method takes care of itself 
+  } 
+  else if ( currentLayout.activeJoy.clickConfigClicked() ) {
+    //method takes care of itself
   }
-  
-
 }
 
 void mousePressed() {
@@ -329,9 +347,8 @@ void mousePressed() {
     Menu_button tmb = (Menu_button)menu_buttons.get(i);
     if (tmb.contains(mouseX, mouseY)) {
       menu_button_command(tmb.getName());
-    } 
+    }
   }
-
 }
 
 void mouseDragged() {
@@ -339,17 +356,13 @@ void mouseDragged() {
 
     ArrayList layoutButtons = (ArrayList) currentLayout.getButtons();
 
-    for(int i=0; i < layoutButtons.size(); i++ ){
+    for(int i=0; i < layoutButtons.size(); i++ ) {
       Button tb = (Button)layoutButtons.get(i);
       if ( tb.contains(mouseX, mouseY)  ) {
 
         tb.updatePosition();
-
-      } //end if button contains 
-
-
+      } //end if button contains
     }  //end for loop
-
   }
 }
 
@@ -360,12 +373,10 @@ void keyPressed() {
   if (key == 'd' || key == 'D') {
     debugOn = !debugOn; //toggle debug on
     println("DEBUG ON = " + debugOn);
-
   } 
-  else if(key == 's' || key== 'S'){
+  else if(key == 's' || key== 'S') {
     //changeSerialPort(); 
     menu_button_command("serial");
-
   } 
   else if (key == 'b' || key == 'B') {
     menu_button_command("button_lock");
@@ -389,26 +400,24 @@ void keyPressed() {
   }
   else if (keyCode == LEFT) {
     if (currentLayoutNumber == 0) {
-      currentLayoutNumber = theLayouts.size()-1; 
+      currentLayoutNumber = theLayouts.size()-1;
     } 
     else {
       currentLayoutNumber--;
     }
     currentLayout = (Layout) theLayouts.get(currentLayoutNumber);
-    resetSets(); 
+    resetSets();
   } 
   else if (keyCode == RIGHT) {
     if (currentLayoutNumber == ( theLayouts.size()-1 )) {
-      currentLayoutNumber = 0; 
+      currentLayoutNumber = 0;
     } 
     else {
       currentLayoutNumber++;
     }
     currentLayout = (Layout) theLayouts.get(currentLayoutNumber);
-    resetSets(); 
+    resetSets();
   }
-
-
 }
 
 
@@ -416,7 +425,7 @@ void keyPressed() {
 void resetAllButtons() {
 
   ArrayList tmpButtons = (ArrayList) currentLayout.getButtons();
-  for(int i=0; i < tmpButtons.size(); i++ ){
+  for(int i=0; i < tmpButtons.size(); i++ ) {
     Button tb = (Button)tmpButtons.get(i);
     tb.forceReset();
   }
@@ -431,7 +440,7 @@ String changeSerialPort() {
   delay(100);
 
   if ( currentPortNumber == (availablePorts.length-1)) {
-    currentPortNumber = 0; 
+    currentPortNumber = 0;
   } 
   else {
     currentPortNumber++;
@@ -442,12 +451,7 @@ String changeSerialPort() {
   myPort = new Serial(this, Serial.list()[currentPortNumber], 19200);
 
   return availablePorts[currentPortNumber];
-
-
 }
-
-
-
 
 
 

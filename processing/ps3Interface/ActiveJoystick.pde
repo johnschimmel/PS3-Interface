@@ -1,10 +1,10 @@
 class ActiveJoystick {
   Ellipse2D container, centerDot; //contains xPos, yPos, width and height
 
-  int dotX, dotY; // the position of the joystick dot
+    int dotX, dotY; // the position of the joystick dot
   int dotWidth =  30;
 
-  
+
   //colors
   color containerStroke = color(255,0,0);
   color dotColor = color(255,0,0);
@@ -18,7 +18,9 @@ class ActiveJoystick {
   //button container
   Rectangle labelContainer, modeToggleBtn, switchButtonLabel,clickConfigBtn;
 
-  Button switchButtonL,switchButtonR, keyButton1, keyButton2; //button that is pressed when ActiveJoystick is used and mouse clicked.
+  Button switchButtonL,switchButtonR;
+  Button[] serialButtons = new Button[3];
+  Boolean[] serialButtonsPressed = new Boolean[3];
   Boolean switchPressed,keyButton1Pressed, keyButton2Pressed = false;
   ArrayList selectedButtons, joystickButtons;
   boolean displayClickConfigButtons = false;
@@ -26,13 +28,13 @@ class ActiveJoystick {
   //colors
   color leftFill = color(20,255,50); //green ;
   color rightFill = color(0,120,255); //blue;
-  
+
   //boolean
   boolean locked = false;
-  
+
   float keyButtonDelay = 2000;
   float keyButton1Time;
-  
+
   ActiveJoystick(int x, int y, int w, int h) {
     this.container = new Ellipse2D.Double(x,y,w+(this.dotWidth/2),h+(this.dotWidth/2));
     this.dotX = (int)this.container.getX()+((int)this.container.getWidth()/2)-(this.dotWidth/2);
@@ -79,7 +81,7 @@ class ActiveJoystick {
       tmpButtonObj.resize(2);
 
       if (currMaxHeight < tmpButtonObj.getHeight() ) {
-        currMaxHeight =(int) tmpButtonObj.getHeight(); 
+        currMaxHeight =(int) tmpButtonObj.getHeight();
       }
       // x position for next button with 5px spacing
       currX += tmpButtonObj.getWidth() + 5;
@@ -93,14 +95,21 @@ class ActiveJoystick {
     this.switchButtonR = new Button(tButton2); 
     this.switchPressed = false;
 
-    Button tButton3 = (Button)joystickButtons.get(2);
-    this.keyButton1 = new Button(tButton3); 
-    this.keyButton1Pressed = false;
-    
-    Button tButton4 = (Button)joystickButtons.get(3);
-    this.keyButton2 = new Button(tButton4); 
-    this.keyButton2Pressed = false;
+    for (int i=0; i<3; i++) {
+      Button tmpButton = (Button)joystickButtons.get(2+i);
+      this.serialButtons[i] = new Button(tmpButton); 
+      this.serialButtonsPressed[i] = false;
+    }
 
+    /*
+    Button tButton3 = (Button)joystickButtons.get(2);
+     this.keyButton1 = new Button(tButton3); 
+     this.keyButton1Pressed = false;
+     
+     Button tButton4 = (Button)joystickButtons.get(3);
+     this.keyButton2 = new Button(tButton4); 
+     this.keyButton2Pressed = false;
+     */
 
     this.labelContainer = new Rectangle();
     this.labelContainer.setLocation(10, height-70);
@@ -118,9 +127,10 @@ class ActiveJoystick {
 
       smooth();
       if (this.mode == 'L') {
-       stroke(this.leftFill); 
-      } else {
-       stroke(this.rightFill);
+        stroke(this.leftFill);
+      } 
+      else {
+        stroke(this.rightFill);
       }
       fill(255);
       ellipseMode(CORNER);
@@ -137,27 +147,27 @@ class ActiveJoystick {
       stroke(120);
       ellipseMode(CENTER);
       ellipse((int)this.centerDot.getX()+(this.dotWidth/4),(int)this.centerDot.getY()+(this.dotWidth/4),(int)this.centerDot.getWidth(), (int)this.centerDot.getHeight());
-      
+
       if (!this.locked) {      
         //send command
         this.sendCommand();
       }
-      
+
       //toggle the click lock and unlock
       if (this.centerDot.contains(mouseX, mouseY) && mousePressed) {
         this.locked=true;
-      } else if (this.locked && this.container.contains(mouseX, mouseY) && mousePressed) {
-        this.locked = false; 
-
+      } 
+      else if (this.locked && this.container.contains(mouseX, mouseY) && mousePressed) {
+        this.locked = false;
       }
-      
+
       this.displayMouseDot();
       //display the click config button area 
       if (displayClickConfigButtons) {
         this.displayButtons();
       }
     }
-    
+
     //display the lower left label
 
     this.displayScreenJoyLabel();
@@ -166,26 +176,27 @@ class ActiveJoystick {
   void displayMouseDot() {
     noStroke();
     if (this.mode == 'L') {
-      fill(this.leftFill); 
-    } else {
-     fill(this.rightFill);
+      fill(this.leftFill);
+    } 
+    else {
+      fill(this.rightFill);
     }
-    
+
     if (this.centerDot.contains(mouseX, mouseY)) {
-     fill(255,0,0);
+      fill(255,0,0);
     }
 
     if (this.container.contains(mouseX,mouseY) ) {
       dotX = mouseX;
       dotY = mouseY;
     } 
-    
+
     if (this.locked) {
       fill(255,0,0);
       ellipseMode(CENTER);
       ellipse((int)this.centerDot.getX()+(this.dotWidth/4),(int)this.centerDot.getY()+(this.dotWidth/4),(int)this.centerDot.getWidth(), (int)this.centerDot.getHeight());
-      
-    } else {
+    } 
+    else {
       ellipseMode(CENTER);
       ellipse( dotX, dotY, this.dotWidth, this.dotWidth);
     }
@@ -194,10 +205,10 @@ class ActiveJoystick {
   void sendCommand() {
     String commandString = "";
     if (this.mode == 'L') {
-      commandString = this.commandLeftJoy; 
+      commandString = this.commandLeftJoy;
     } 
     else {
-      commandString =this. commandRightJoy; 
+      commandString =this. commandRightJoy;
     }
 
     if (this.container.contains(mouseX, mouseY)) {
@@ -229,16 +240,15 @@ class ActiveJoystick {
         this.switchButtonL.highlight(true);
         this.switchPressed = true;
       } 
-      
+
       if (mouseButton == RIGHT) {
         this.switchButtonR.setX(mouseX-(int)this.switchButtonR.getWidth()/2);
         this.switchButtonR.setY(mouseY-(int)this.switchButtonR.getHeight()-this.dotWidth);
         this.switchButtonR.display();
         this.switchButtonR.sendCommand(); 
         this.switchButtonR.highlight(true);
-        this.switchPressed = true;  
-      } 
-
+        this.switchPressed = true;
+      }
     } 
     else if (!mousePressed && this.switchPressed) {
 
@@ -246,38 +256,52 @@ class ActiveJoystick {
       this.switchButtonR.forceReset();
 
       this.switchPressed = false;
-
-    }
-    
-    if (keyPressed && this.container.contains(mouseX,mouseY) ) {
-        if (key == 'a' || key == 'A') {
-            this.keyButton1.setX(mouseX-(int)this.keyButton1.getWidth()/2);
-            this.keyButton1.setY(mouseY-(int)this.keyButton1.getHeight()-this.dotWidth);
-            this.keyButton1.display();
-            this.keyButton1.sendCommand(); 
-            this.keyButton1.highlight(true);
-            this.keyButton1Pressed = true;
-        }
-        
-        if (key == 'c' || key == 'C') {
-            this.keyButton2.setX(mouseX-(int)this.keyButton2.getWidth()/2);
-            this.keyButton2.setY(mouseY-(int)this.keyButton2.getHeight()-this.dotWidth);
-            this.keyButton2.display();
-            this.keyButton2.sendCommand(); 
-            this.keyButton2.highlight(true);
-            this.keyButton2Pressed = true;
-            
-        }
-
-
-    } else if (!keyPressed && this.container.contains(mouseX,mouseY) && this.keyButton1Pressed) {
-          this.keyButton1.forceReset();
-          this.keyButton1Pressed = false;
-    } else if (!keyPressed && this.container.contains(mouseX,mouseY) && this.keyButton2Pressed) {
-            this.keyButton2.forceReset();
-            this.keyButton2Pressed = false;
     }
 
+    /*
+    if (accessorySwitch1 && this.container.contains(mouseX,mouseY)) {
+     //if (key == 'a' || key == 'A') {
+     this.keyButton1.setX(mouseX-(int)this.keyButton1.getWidth()/2);
+     this.keyButton1.setY(mouseY-(int)this.keyButton1.getHeight()-this.dotWidth);
+     this.keyButton1.display();
+     this.keyButton1.sendCommand(); 
+     this.keyButton1.highlight(true);
+     this.keyButton1Pressed = true;
+     }
+     */
+
+    for(int i=0; i<3; i++) {
+
+      if (accessorySwitch[i] && this.container.contains(mouseX,mouseY)) {
+        //if (key == 'a' || key == 'A') {
+        this.serialButtons[i].setX(mouseX-(int)this.serialButtons[i].getWidth()/2);
+        this.serialButtons[i].setY(mouseY-(int)this.serialButtons[i].getHeight()-this.dotWidth);
+        this.serialButtons[i].display();
+        this.serialButtons[i].sendCommand(); 
+        this.serialButtons[i].highlight(true);
+        this.serialButtonsPressed[i] = true;
+      }
+      if (!accessorySwitch[i] && this.container.contains(mouseX,mouseY) && this.serialButtonsPressed[i]) {
+        this.serialButtons[i].forceReset();
+        this.serialButtonsPressed[i] = false;
+      }
+    }
+    /*        
+     if (key == 'c' || key == 'C') {
+     this.keyButton2.setX(mouseX-(int)this.keyButton2.getWidth()/2);
+     this.keyButton2.setY(mouseY-(int)this.keyButton2.getHeight()-this.dotWidth);
+     this.keyButton2.display();
+     this.keyButton2.sendCommand(); 
+     this.keyButton2.highlight(true);
+     this.keyButton2Pressed = true;
+     
+     }
+     
+    if (!accessorySwitch1 && this.container.contains(mouseX,mouseY) && this.keyButton1Pressed) {
+      this.keyButton1.forceReset();
+      this.keyButton1Pressed = false;
+    }
+    */
   }
 
 
@@ -290,7 +314,7 @@ class ActiveJoystick {
     this.reset(); //sets x and y  to 128, centered position
 
     this.active = false;
-    return true; 
+    return true;
   }
 
   boolean  isActive() {
@@ -304,12 +328,11 @@ class ActiveJoystick {
 
   boolean clicked() {
     if (this.labelContainer.contains(mouseX,mouseY)) {
-      return true; 
+      return true;
     }
     else {
-      return false; 
+      return false;
     }
-
   }
 
   void displayScreenJoyLabel() {
@@ -318,7 +341,7 @@ class ActiveJoystick {
     textFont(font);
     String label = "ACTIVE JOYSTICK ";
 
-  
+
     if (this.isActive()) {
       fill(30);
       rect(0, (int)this.labelContainer.getY(),width,(int)this.labelContainer.getY()+20);
@@ -327,8 +350,8 @@ class ActiveJoystick {
         fill(0,120,255); //blue
       } 
       else {
-        fill(20,255,50); //green 
-      }  
+        fill(20,255,50); //green
+      }
     } 
     else {
       label += "OFF";
@@ -345,22 +368,20 @@ class ActiveJoystick {
     //display LEFT RIGHT buttons
     if (this.isActive()) {
       this.displayLeftRightToggle();
-      
     }
-
   }
 
   void displayButtons() {
     Button firstButton = (Button) this.joystickButtons.get(0);
-    
+
     Button lastButton = (Button) this.joystickButtons.get(this.joystickButtons.size()-1);
-    
+
     fill(255);
     stroke(100);
     rect(firstButton.theRect.x-10, firstButton.theRect.y-5, 340, 90);
     noStroke();
     noFill();
-    
+
     for(int i=0; i<this.joystickButtons.size(); i++) {
       Button tButton = (Button) this.joystickButtons.get(i);
       tButton.display();
@@ -368,121 +389,132 @@ class ActiveJoystick {
       if (tButton.theRect.contains(mouseX, mouseY)) {
         tButton.highlight(true); 
         if (mousePressed) {
-           if (mouseButton == LEFT) {
-              this.switchButtonL =new Button(tButton);
-              
-           } else {
-              this.switchButtonR =new Button(tButton);
-             
-           }
+          if (mouseButton == LEFT) {
+            this.switchButtonL =new Button(tButton);
+          } 
+          else {
+            this.switchButtonR =new Button(tButton);
+          }
         }
         
-        //if keypressed for activeJoystick
-        if(keyPressed) {
-           if (key == 'a' || key == 'A') {
-             this.keyButton1 =new Button(tButton);
-           } else if (key == 'c' || key == 'C') {
-             this.keyButton2 =new Button(tButton);
-           }
-           
-         }
+        for(int j=0; j<3; j++){
+          if (accessorySwitch[j]) {
+            this.serialButtons[j] = new Button(tButton);
+          } 
+        }
+        /*
+        if (accessorySwitch1) {
+          this.keyButton1 =new Button(tButton);
+        } 
+        */
+        /*else if (key == 'c' || key == 'C') {
+         this.keyButton2 =new Button(tButton);
+         }*/
       } 
       else {
-        tButton.highlight(false); 
+        tButton.highlight(false);
       }
 
       //button group highlighted
-      if (tButton.name == this.switchButtonL.name || tButton.name == this.switchButtonR.name || tButton.name ==this.keyButton1.name || tButton.name ==this.keyButton2.name) {
-        tButton.highlight(true); 
+      if (tButton.name == this.switchButtonL.name || tButton.name == this.switchButtonR.name) {
+        tButton.highlight(true);
       }
-    } 
-
+      
+      for(int j=0; j<3; j++) {
+        if (this.serialButtons[j].name == tButton.name) {
+          tButton.highlight(true);
+        } 
+      }
+    }
   }
 
   void displayLeftRightToggle() {
-   
-   fill(120);
-   String leftStr = "L-JOY";
-   String rightStr = "R-JOY";
-   String clickConfStr = "CLICK CONFIG";
+
+    fill(120);
+    String leftStr = "L-JOY";
+    String rightStr = "R-JOY";
+    String clickConfStr = "CLICK CONFIG";
 
     int tmpX = (int)this.labelContainer.getWidth() + 15;
     int tmpY = (int)this.labelContainer.getY() ;   
     this.modeToggleBtn.setLocation(tmpX, tmpY);
     this.modeToggleBtn.setSize((int)textWidth(leftStr)+(int)textWidth(rightStr),20); //110 shouldn't be hardcoded, should be 
-   
-   this.clickConfigBtn.setLocation( (int)this.modeToggleBtn.getX()+ (int)this.modeToggleBtn.getWidth()+50, tmpY);
+
+    this.clickConfigBtn.setLocation( (int)this.modeToggleBtn.getX()+ (int)this.modeToggleBtn.getWidth()+50, tmpY);
     this.clickConfigBtn.setSize((int)textWidth(clickConfStr), 20);
-   
-   //rect((int)this.modeToggleBtn.getX(),(int)this.modeToggleBtn.getY()-5, (int)this.modeToggleBtn.getWidth(), (int)this.modeToggleBtn.getHeight()+20);
-   int leftFill,rightFill = 0;
-   
-   if ( this.mode == 'L') {
+
+    //rect((int)this.modeToggleBtn.getX(),(int)this.modeToggleBtn.getY()-5, (int)this.modeToggleBtn.getWidth(), (int)this.modeToggleBtn.getHeight()+20);
+    int leftFill,rightFill = 0;
+
+    if ( this.mode == 'L') {
       leftFill = this.leftFill; //green ;
       rightFill = 120;
-     
-   } else {
+    } 
+    else {
       leftFill =120;
       rightFill = this.rightFill; //blue;
-      
-   }
-   
-   fill(leftFill);
-   text(leftStr,(int)this.modeToggleBtn.getX()+5,(int)this.modeToggleBtn.getY()+20);
-   fill(rightFill);
-   text(rightStr, (int)this.modeToggleBtn.getX()+(int)textWidth(leftStr)+15,(int)this.modeToggleBtn.getY()+20);
-   
-   //display click config label
-   fill(120);
-   text(clickConfStr, (int)this.clickConfigBtn.getX(),(int)this.clickConfigBtn.getY()+20);
+    }
+
+    fill(leftFill);
+    text(leftStr,(int)this.modeToggleBtn.getX()+5,(int)this.modeToggleBtn.getY()+20);
+    fill(rightFill);
+    text(rightStr, (int)this.modeToggleBtn.getX()+(int)textWidth(leftStr)+15,(int)this.modeToggleBtn.getY()+20);
+
+    //display click config label
+    fill(120);
+    text(clickConfStr, (int)this.clickConfigBtn.getX(),(int)this.clickConfigBtn.getY()+20);
   }
-  
-  
+
+
   boolean leftRightClicked() {
     if (this.modeToggleBtn.contains(mouseX, mouseY)) {
-     return true; 
-    } else {
-     return false; 
+      return true;
+    } 
+    else {
+      return false;
     }
-    
   }
-  
+
   void toggleLeftRight() {
     this.reset();
-   if (this.mode == 'L') {
-     this.mode = 'R';
-   }  else {
-    this.mode = 'L'; 
-   }
+    if (this.mode == 'L') {
+      this.mode = 'R';
+    }  
+    else {
+      this.mode = 'L';
+    }
   }
 
 
   boolean clickConfigClicked() {
     if (this.clickConfigBtn.contains(mouseX, mouseY)) {
-     this.displayClickConfigButtons = !this.displayClickConfigButtons;
-     return true;
-    } else {
-     return false; 
+      this.displayClickConfigButtons = !this.displayClickConfigButtons;
+      return true;
+    } 
+    else {
+      return false;
     }
-      
-    
   }
-  
 
-  
+
+
   void reset() {
 
     this.switchButtonL.forceReset();
     this.switchButtonR.forceReset();
-    this.keyButton1.forceReset();
-    this.keyButton2.forceReset();
+//    this.keyButton1.forceReset();
+//    this.keyButton2.forceReset();
     
+    for(int i=0; i<3; i++){
+      this.serialButtons[i].forceReset();  
+    }
+
     String commandString = "";
     if (this.mode == 'L') {
-      commandString = commandLeftJoy; 
+      commandString = commandLeftJoy;
     } 
     else {
-      commandString = commandRightJoy; 
+      commandString = commandRightJoy;
     }
 
     //send X
@@ -498,13 +530,10 @@ class ActiveJoystick {
     myPort.write(this.analogYVal);
 
 
-    if (debugOn){
+    if (debugOn) {
       println("resetting activejoy");
       println("sending activejoy (" + this.mode + ") : " + xCommandString + "=" + analogXVal + "   " + yCommandString + "=" + analogYVal);
     }
   }
-
-
-
 }
 
