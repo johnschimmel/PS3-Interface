@@ -5,13 +5,13 @@ We use the arduino to communicate from the PC to the Pic bitwhcker. The bitwhack
 The Bitwhacker sits on an Arduino shield and the connections are as followed...
 
 Arduino pin     Pic bitwhacker pin
-10  -------->   2
-11  -------->   0
-13  -------->   1
+10  -------->   RB 2
+11  -------->   RB 0
+13  -------->   RB 1
 Grnd    ---->   Grnd
 
-Pic Bitwhacker pin connection
-RB Pin 2 --> RA Pin 5
+                Pic Bitwhacker internal pin connection
+                RB Pin 2 --> RA Pin 5
 
 1) Load the .pde sketch code onto the arduino
 2) Load the .hex file onto the pic bitwhacker with the windows hex loader. 
