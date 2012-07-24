@@ -13,11 +13,19 @@ ArrayList layoutMenu_buttons;
 PFont font;
 Serial myPort; //serial port
 Serial switchPort;
+Boolean useSwitchPort = false;
 String[] availablePorts; //used to keep track of available ports
 int currentPortNumber = 0; // element number from availablePorts
 int[] dataIn = new int[2];         // a list to hold data from the serial ports
 
-byte[][] incomingData = { {65,66,67}, {97,98,99} }; //imcomingData[0] = 'A','B','C' [1] = 'a','b','c'
+byte[][] incomingData = { 
+  {
+    65, 66, 67
+  }
+  , {
+    97, 98, 99
+  }
+}; //imcomingData[0] = 'A','B','C' [1] = 'a','b','c'
 boolean[] accessorySwitch = new boolean[3];
 
 proxml.XMLElement controller, buttons, joysticks, layouts;
@@ -46,19 +54,24 @@ ActiveJoystick activejoy;
 boolean accessorySwitch1, accessorySwitch2 = false;
 
 void setup() {
-  size(1366,700);
+  size(1366, 700);
 
   println(Serial.list());
   availablePorts = Serial.list();
   println("There are " + availablePorts.length + " serial ports");
   println("----------------------------------------");
-//  myPort = new Serial(this, Serial.list()[currentPortNumber], 19200);
-  //define 2nd serial port for swi
-//  switchPort = new Serial(this, "COM8", 9600);
 
-myPort = new Serial(this, Serial.list()[2], 19200);
-switchPort = new Serial(this, Serial.list()[0], 9600);
-  
+
+  //myPort = new Serial(this, Serial.list()[currentPortNumber], 19200);
+  //  define 2nd serial port for swi
+  //switchPort = new Serial(this, "COM5", 9600);
+
+
+
+
+  myPort = new Serial(this, Serial.list()[0], 19200);
+  //switchPort = new Serial(this, Serial.list()[2], 9600);
+
 
   theButtons = new ArrayList();
   theButtonLibrary = new ArrayList();
@@ -76,24 +89,24 @@ switchPort = new Serial(this, Serial.list()[0], 9600);
 
   //menu buttons
   menu_buttons = new ArrayList();
-  Menu_button buttonLockTemp = new Menu_button("button_lock","(B)uttons locked", "toggle",0,height-35,170,30,color(200),color(255), color(0), color(255,0,0));
+  Menu_button buttonLockTemp = new Menu_button("button_lock", "(B)uttons locked", "toggle", 0, height-35, 170, 30, color(200), color(255), color(0), color(255, 0, 0));
   buttonLockTemp.setActiveLabel("(B)uttons unlocked");
 
-  Menu_button buttonLibraryTemp = new Menu_button("button_library","Button (L)ibrary", "toggle",170,height-35,170,30,color(200),color(255), color(0), color(255,0,0));
-  Menu_button resetTemp =new Menu_button("reset","(R)eset", "momentary",320,height-35,100,30,color(200),color(255), color(0),color(255,0,0));
-  Menu_button serialTemp =new Menu_button("serial","(S)erial - " +availablePorts[currentPortNumber],"momentary", 430,height-35,350,30,color(200),color(255), color(0),color(255,0,0));
+  Menu_button buttonLibraryTemp = new Menu_button("button_library", "Button (L)ibrary", "toggle", 170, height-35, 170, 30, color(200), color(255), color(0), color(255, 0, 0));
+  Menu_button resetTemp =new Menu_button("reset", "(R)eset", "momentary", 320, height-35, 100, 30, color(200), color(255), color(0), color(255, 0, 0));
+  //Menu_button serialTemp =new Menu_button("serial","(S)erial - " +availablePorts[currentPortNumber],"momentary", 430,height-35,350,30,color(200),color(255), color(0),color(255,0,0));
 
   int layoutButtonWidth = 45;
-  Menu_button layout1 = new Menu_button("layout_1","(1)","toggle",width-(layoutButtonWidth*5), height-35,layoutButtonWidth,30,color(200),color(255), color(0), color(255,0,0));
-  Menu_button layout2 = new Menu_button("layout_2","(2)","toggle",width-(layoutButtonWidth*4), height-35,layoutButtonWidth,30,color(200),color(255), color(0), color(255,0,0));
-  Menu_button layout3 = new Menu_button("layout_3","(3)","toggle",width-(layoutButtonWidth*3), height-35,layoutButtonWidth,30,color(200),color(255), color(0), color(255,0,0));
-  Menu_button layout4 = new Menu_button("layout_4","(4)","toggle",width-(layoutButtonWidth*2), height-35,layoutButtonWidth,30,color(200),color(255), color(0), color(255,0,0));
-  Menu_button layout5 = new Menu_button("layout_5","(5)","toggle",width-(layoutButtonWidth*1), height-35,layoutButtonWidth,30,color(200),color(255), color(0), color(255,0,0));
+  Menu_button layout1 = new Menu_button("layout_1", "(1)", "toggle", width-(layoutButtonWidth*5), height-35, layoutButtonWidth, 30, color(200), color(255), color(0), color(255, 0, 0));
+  Menu_button layout2 = new Menu_button("layout_2", "(2)", "toggle", width-(layoutButtonWidth*4), height-35, layoutButtonWidth, 30, color(200), color(255), color(0), color(255, 0, 0));
+  Menu_button layout3 = new Menu_button("layout_3", "(3)", "toggle", width-(layoutButtonWidth*3), height-35, layoutButtonWidth, 30, color(200), color(255), color(0), color(255, 0, 0));
+  Menu_button layout4 = new Menu_button("layout_4", "(4)", "toggle", width-(layoutButtonWidth*2), height-35, layoutButtonWidth, 30, color(200), color(255), color(0), color(255, 0, 0));
+  Menu_button layout5 = new Menu_button("layout_5", "(5)", "toggle", width-(layoutButtonWidth*1), height-35, layoutButtonWidth, 30, color(200), color(255), color(0), color(255, 0, 0));
 
   menu_buttons.add(buttonLockTemp);
   menu_buttons.add(buttonLibraryTemp);
   menu_buttons.add(resetTemp);
-  menu_buttons.add(serialTemp);
+  //menu_buttons.add(serialTemp);
 
   menu_buttons.add(layout1);
   menu_buttons.add(layout2);
@@ -108,9 +121,9 @@ switchPort = new Serial(this, Serial.list()[0], 9600);
   layoutMenu_buttons.add(layout5);
 
   library = new ButtonLibrary();
-  
-  for(int i=0; i<accessorySwitch.length; i++) {
-    accessorySwitch[i] = false; 
+
+  for (int i=0; i<accessorySwitch.length; i++) {
+    accessorySwitch[i] = false;
   }
 }
 
@@ -131,12 +144,12 @@ void draw() {
 
   fill(200);
   noStroke();
-  rect(0,height-40,width, 40);
+  rect(0, height-40, width, 40);
   textFont(font);
 
   fill(0);
 
-  for(int mb=0;mb<menu_buttons.size();mb++) {
+  for (int mb=0;mb<menu_buttons.size();mb++) {
     Menu_button tempmb = (Menu_button)menu_buttons.get(mb);
     tempmb.display();
   }
@@ -183,7 +196,7 @@ void xmlEvent(proxml.XMLElement element) {
 
     //prepare button objects from xml data
     println("There are  " + buttons.countChildren() + " buttons");
-    for(int i =0; i< buttons.countChildren(); i++) {
+    for (int i =0; i< buttons.countChildren(); i++) {
 
       proxml.XMLElement tempButton = buttons.getChild(i);
       proxml.XMLElement tempButtonElements[] = tempButton.getChildren();   
@@ -197,7 +210,7 @@ void xmlEvent(proxml.XMLElement element) {
       String isAnalog = "";
 
       //get the button elements
-      for(int e=0; e<tempButton.countChildren(); e++ ) {
+      for (int e=0; e<tempButton.countChildren(); e++ ) {
         proxml.XMLElement tempElement = tempButton.getChild(e);
 
         if (tempElement.getElement().equals("image")) {
@@ -212,7 +225,7 @@ void xmlEvent(proxml.XMLElement element) {
         }
       } //end of for loop for button elements
 
-      Button tb = new Button(buttonName, buttonImage,buttonCommand, buttonXPos, buttonYPos,isAnalog);
+      Button tb = new Button(buttonName, buttonImage, buttonCommand, buttonXPos, buttonYPos, isAnalog);
       theButtonLibrary.add(tb);
     } //end of for loop for buttons   
     xmlLayouts = new XMLInOut(this);
@@ -225,14 +238,14 @@ void xmlEvent(proxml.XMLElement element) {
 
     print(currentElement);
     println("There are  " + layouts.countChildren() + " layouts");
-    for(int i =0; i< layouts.countChildren(); i++) {
+    for (int i =0; i< layouts.countChildren(); i++) {
       proxml.XMLElement tempLayout = layouts.getChild(i);
       proxml.XMLElement layoutButtons[] = tempLayout.getChildren();
 
       Layout tempLayoutObj = new Layout(); //create new layout obj
       println("# of buttons in layout = " + tempLayout.countChildren());
 
-      for(int b=0; b<tempLayout.countChildren(); b++) {
+      for (int b=0; b<tempLayout.countChildren(); b++) {
         proxml.XMLElement tButton = tempLayout.getChild(b); //get the xml for the layout button
 
         //get name
@@ -263,7 +276,7 @@ void xmlEvent(proxml.XMLElement element) {
 Button getButtonByName(String name) {
   Button foundButton = null;
 
-  for(int i=0; i<theButtonLibrary.size(); i++) {
+  for (int i=0; i<theButtonLibrary.size(); i++) {
     Button tButton = (Button) theButtonLibrary.get(i);
     if (tButton.name.equals(name)) {
       foundButton = tButton;
@@ -274,27 +287,29 @@ Button getButtonByName(String name) {
 }
 
 void serialEvent(Serial p) { 
-  int inByte = (switchPort.read());
-  for(int i=0; i<3; i++) {
-    if (inByte == incomingData[0][i]) {
-      accessorySwitch[i] = true;
-    }
-    
-    if (inByte == incomingData[1][i]) {
-      accessorySwitch[i] = false; 
+  if (useSwitchPort) {
+    int inByte = (switchPort.read());
+    for (int i=0; i<3; i++) {
+      if (inByte == incomingData[0][i]) {
+        accessorySwitch[i] = true;
+      }
+
+      if (inByte == incomingData[1][i]) {
+        accessorySwitch[i] = false;
+      }
     }
   }
-  
+
   /*
   if (inByte == 49) {
-    //incoming 1
-    accessorySwitch1 = true;
-  } 
-  else if (inByte == 48) {
-    //incoming 0
-    accessorySwitch1 = false;
-  }
-  */
+   //incoming 1
+   accessorySwitch1 = true;
+   } 
+   else if (inByte == 48) {
+   //incoming 0
+   accessorySwitch1 = false;
+   }
+   */
 }
 
 
@@ -303,14 +318,14 @@ void mouseReleased() {
 
     proxml.XMLElement layoutsXML = new proxml.XMLElement("layouts");
 
-    for(int n=0; n < theLayouts.size(); n++) {
+    for (int n=0; n < theLayouts.size(); n++) {
       Layout tmpLayout = (Layout) theLayouts.get(n);
 
       //create xml for <layout>
       proxml.XMLElement layout = new proxml.XMLElement("layout");
 
       ArrayList tmpButtons = (ArrayList) tmpLayout.getButtons();
-      for(int i=0; i < tmpButtons.size();i++) {
+      for (int i=0; i < tmpButtons.size();i++) {
         Button tmpB =(Button) tmpButtons.get(i);
         layout.addChild(tmpB.getXML());
       }
@@ -319,7 +334,7 @@ void mouseReleased() {
     }
 
 
-    xmlLayouts.saveElement(layoutsXML,"xml/layouts.xml");
+    xmlLayouts.saveElement(layoutsXML, "xml/layouts.xml");
 
     resetSets();
   } //end if buttonslocked
@@ -343,7 +358,7 @@ void mouseReleased() {
 
 void mousePressed() {
 
-  for(int i=0; i<menu_buttons.size();i++) {
+  for (int i=0; i<menu_buttons.size();i++) {
     Menu_button tmb = (Menu_button)menu_buttons.get(i);
     if (tmb.contains(mouseX, mouseY)) {
       menu_button_command(tmb.getName());
@@ -356,7 +371,7 @@ void mouseDragged() {
 
     ArrayList layoutButtons = (ArrayList) currentLayout.getButtons();
 
-    for(int i=0; i < layoutButtons.size(); i++ ) {
+    for (int i=0; i < layoutButtons.size(); i++ ) {
       Button tb = (Button)layoutButtons.get(i);
       if ( tb.contains(mouseX, mouseY)  ) {
 
@@ -374,7 +389,7 @@ void keyPressed() {
     debugOn = !debugOn; //toggle debug on
     println("DEBUG ON = " + debugOn);
   } 
-  else if(key == 's' || key== 'S') {
+  else if (key == 's' || key== 'S') {
     //changeSerialPort(); 
     menu_button_command("serial");
   } 
@@ -425,7 +440,7 @@ void keyPressed() {
 void resetAllButtons() {
 
   ArrayList tmpButtons = (ArrayList) currentLayout.getButtons();
-  for(int i=0; i < tmpButtons.size(); i++ ) {
+  for (int i=0; i < tmpButtons.size(); i++ ) {
     Button tb = (Button)tmpButtons.get(i);
     tb.forceReset();
   }
@@ -452,7 +467,6 @@ String changeSerialPort() {
 
   return availablePorts[currentPortNumber];
 }
-
 
 
 
