@@ -3,31 +3,31 @@
   <layout>
     <button xpos="336" name="PS" ypos="4"/>
     <button xpos="34" name="Start" ypos="1"/>
-    <button xpos="201" name="Select" ypos="143"/>
+    <button xpos="197" name="Select" ypos="144"/>
     <button xpos="577" name="DPad Up" ypos="1"/>
     <button xpos="470" name="DPad Left" ypos="42"/>
     <button xpos="61" name="L2 Trigger" ypos="187"/>
     <button xpos="1053" name="R2 Trigger" ypos="197"/>
-    <button xpos="231" name="R3" ypos="39"/>
+    <button xpos="325" name="R3" ypos="372"/>
     <button xpos="59" name="L1 Trigger" ypos="97"/>
     <button xpos="1065" name="R1 Trigger" ypos="90"/>
-    <button xpos="370" name="L3" ypos="187"/>
-    <button xpos="741" name="R2 Trigger" ypos="142"/>
-    <button xpos="869" name="R2 Trigger" ypos="290"/>
-    <button xpos="247" name="R2 Trigger" ypos="353"/>
-    <button xpos="485" name="R2 Trigger" ypos="267"/>
-    <button xpos="315" name="Square" ypos="298"/>
-    <button xpos="820" name="Circle" ypos="277"/>
+    <button xpos="297" name="L3" ypos="278"/>
+    <button xpos="737" name="R2 Trigger" ypos="141"/>
+    <button xpos="1089" name="R2 Trigger" ypos="288"/>
+    <button xpos="73" name="R2 Trigger" ypos="385"/>
+    <button xpos="75" name="R2 Trigger" ypos="487"/>
+    <button xpos="190" name="Square" ypos="328"/>
+    <button xpos="881" name="Circle" ypos="112"/>
     <button xpos="693" name="Triangle" ypos="146"/>
     <button xpos="867" name="R1 Trigger" ypos="15"/>
     <button xpos="922" name="R2 Trigger" ypos="49"/>
     <button xpos="655" name="DPad Right" ypos="49"/>
     <button xpos="577" name="DPad Down" ypos="126"/>
     <button xpos="633" name="Cross" ypos="515"/>
-    <button xpos="663" name="Triangle" ypos="364"/>
+    <button xpos="1189" name="Triangle" ypos="307"/>
     <button xpos="750" name="Circle" ypos="497"/>
     <button xpos="477" name="Square" ypos="505"/>
-    <button xpos="554" name="Cross" ypos="273"/>
+    <button xpos="33" name="Cross" ypos="321"/>
     <button xpos="889" name="L Joy" ypos="472"/>
     <button xpos="1125" name="R Joy" ypos="451"/>
   </layout>

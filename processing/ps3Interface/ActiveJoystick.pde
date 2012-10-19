@@ -211,7 +211,7 @@ class ActiveJoystick {
       commandString =this. commandRightJoy;
     }
 
-    if (this.container.contains(mouseX, mouseY)) {
+    if (this.container.contains(mouseX, mouseY) ||  this.switchPressed) {
       //send X
       String xCommandString = commandString.toLowerCase();
       int tempXVal =  (int)map(mouseX, (int)this.container.getX(), ((int)this.container.getWidth()+(int)this.container.getX()), 0,255);
@@ -231,7 +231,7 @@ class ActiveJoystick {
       if (debugOn) println("sending ScreenJoystick (" + this.mode + ") : " + xCommandString + "=" + analogXVal + "   " + yCommandString + "=" + analogYVal);
     }
     //switch Button control
-    if (mousePressed &&  this.container.contains(mouseX,mouseY) ) { 
+    if (mousePressed &&  (this.container.contains(mouseX,mouseY) || this.switchPressed) ) { 
       if (mouseButton == LEFT) {
         this.switchButtonL.setX(mouseX-(int)this.switchButtonL.getWidth()/2);
         this.switchButtonL.setY(mouseY-(int)this.switchButtonL.getHeight()-this.dotWidth);
